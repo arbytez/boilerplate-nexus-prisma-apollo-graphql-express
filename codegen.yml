@@ -1,0 +1,15 @@
+schema: './src/server/generated/schema.graphql'
+require:
+  - ts-node/register
+config:
+  scalars:
+    DateTime: Date
+generates:
+  ./src/server/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      useIndexSignature: true
+      contextType: ../context#Context

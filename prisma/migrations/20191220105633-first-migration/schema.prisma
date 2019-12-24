@@ -1,0 +1,41 @@
+generator photon {
+  provider = "photonjs"
+}
+
+datasource pg {
+  provider = "postgresql"
+  url = "***"
+  enabled  = env("POSTGRES_URL_ENABLED")
+}
+
+datasource sqlite {
+  provider = "sqlite"
+  url = "***"
+  enabled  = env("SQLITE_URL_ENABLED")
+}
+
+enum Role {
+  USER
+  ADMIN
+  ROOT
+}
+
+model User {
+  id        String   @default(cuid()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  username  String
+  password  String
+  role      Role     @default(USER)
+  todos     Todo[]
+}
+
+model Todo {
+  id        String   @default(cuid()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  done      Boolean
+  content   String
+  user      User
+}
