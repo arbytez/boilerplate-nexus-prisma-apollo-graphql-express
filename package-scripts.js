@@ -9,6 +9,7 @@ const cleanDist = rimraf('./dist');
 const cleanGenerated = rimraf('./src/server/generated');
 const cleanDbGenerated = rimraf('./src/tests/db/generated');
 const cleanNexusTypegen = rimraf('./src/@types/nexus-typegen');
+const cleanGraphDoc = rimraf('./graphdoc');
 
 // read env variables
 let envPath = '';
@@ -76,16 +77,25 @@ const commonScriptsToExport = {
     generated: series(cleanGenerated),
     db: series(cleanDbGenerated),
     nexus: series(cleanNexusTypegen),
-    all: concurrent.nps('clean.dist', 'clean.generated', 'clean.db', 'clean.nexus'),
+    graphdoc: series(cleanGraphDoc),
+    all: concurrent.nps('clean.dist', 'clean.generated', 'clean.db', 'clean.nexus', 'clean.graphdoc'),
     default: series.nps('clean.all'),
   },
   generate: {
     prismaClient: 'prisma2 generate',
     nexus: 'cross-env NODE_ENV=development TRANSPILE_ONLY=true ts-node --transpile-only ./src/server/schema',
     graphqlCodegen: 'graphql-codegen',
+    graphdoc: 'graphdoc -s ./src/server/generated/schema.graphql -o ./graphdoc',
     cnt: 'cnt --schema ./prisma/schema.prisma --outDir ./src/server/generated --mq -f -o',
     ct: 'create-types --schema ./prisma/schema.prisma --outDir ./src/server/generated',
-    default: series.nps('clean.generated', 'clean.nexus', 'generate.prismaClient', 'generate.nexus'),
+    default: series.nps(
+      'clean.generated',
+      'clean.nexus',
+      'clean.graphdoc',
+      'generate.prismaClient',
+      'generate.nexus',
+      'generate.graphdoc'
+    ),
   },
   prisma: {
     migrate: {

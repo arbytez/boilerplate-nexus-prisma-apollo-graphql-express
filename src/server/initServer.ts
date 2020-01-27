@@ -43,6 +43,9 @@ app.use(xss());
 app.use(hpp());
 app.use(cookieParser(process.env.COOKIE_SECRET || 'v4a87x87taxmy'));
 
+// graphdoc auto-generated graphql doc
+app.use('/', express.static('graphdoc'));
+
 // decode the JWT so we can get the user on each request
 app.use((req, _res, next) => {
   const token = getTokenFromReq(req);
