@@ -1,12 +1,12 @@
 import signale from '../logger';
 
-import photon from '../server/photon';
+import prismaClient from '../server/prismaClient';
 
 // catch all the unmanaged errors and stop script
 process.on('uncaughtException', async err => {
   signale.fatal(err);
   try {
-    await photon.disconnect();
+    await prismaClient.disconnect();
   } catch (error) {
     signale.error(error);
   }
@@ -16,7 +16,7 @@ process.on('uncaughtException', async err => {
 process.on('unhandledRejection', async err => {
   signale.fatal(err);
   try {
-    await photon.disconnect();
+    await prismaClient.disconnect();
   } catch (error) {
     signale.error(error);
   }

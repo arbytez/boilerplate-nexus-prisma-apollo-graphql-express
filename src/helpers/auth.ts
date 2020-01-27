@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User, Role } from '@prisma/photon';
+import { User, Role } from '@prisma/client';
 
 import { Context } from '../server/context';
 import { ErrorCode } from '../server/enums';
 import { createApolloError } from './utils';
-import photon from '../server/photon';
+import prismaClient from '../server/prismaClient';
 
 export type DecodedToken =
   | {

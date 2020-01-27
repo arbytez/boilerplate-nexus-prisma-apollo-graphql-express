@@ -1,7 +1,7 @@
 // this file will contain all the yup object schema that must be used in the validation process (see middleware permissions)
 // the responsibility to make a field required is forwarded to who call the validation
 import * as yup from 'yup';
-import { Role } from '@prisma/photon';
+import { Role } from '@prisma/client';
 
 export const usernameSchema = yup
   .string()

@@ -20,14 +20,14 @@ The project uses **nps** ([_npm-package-scripts_](https://github.com/sezna/nps))
 
 ```
 npm i                                       # install dependencies packages (there are a few 😧)
-npm run <dev|test|prod> generate            # generate photon library and typescript definitions for nexus-prisma. Before doing it, set the environment variables needed
+npm run <dev|test|prod> generate            # generate prisma-client-js library and typescript definitions for nexus-prisma. Before doing it, set the environment variables needed
 npm run dev                                 # start development server
 npm run test                                # start jest tests suite
 npm run prod                                # generate, build and start the production server
 
-npm run <dev|test|prod> prisma.lift         # create migration
-npm run <dev|test|prod> prisma.lift.up      # apply migration
-npm run <dev|test|prod> prisma.lift.down    # rollback migration
+npm run <dev|test|prod> prisma.migrate         # create migration
+npm run <dev|test|prod> prisma.migrate.up      # apply migration
+npm run <dev|test|prod> prisma.migrate.down    # rollback migration
 
 npm run dev generate.nexus                  # useful to generate only the nexus typescript definitions while implementing new features
 ```
@@ -72,7 +72,7 @@ config/production.env                       # for production
 
 ## Tests
 
-Before run `npm run test`, set the `config/test.env` file and run `npm run test prisma.lift.up` (check [prisma2 docs](https://github.com/prisma/prisma2/tree/master/docs) to see the correct flow to follow). This command will set your sqlite db on `/src/tests/db/data.sqlite`. This db should not contain data and schema must be updated (run lift.up in test env every time the [schema.prisma](/prisma/schema.prisma) is updated).
+Before run `npm run test`, set the `config/test.env` file and run `npm run test prisma.migrate.up` (check [prisma2 docs](https://github.com/prisma/prisma2/tree/master/docs) to see the correct flow to follow). This command will set your sqlite db on `/src/tests/db/data.sqlite`. This db should not contain data and schema must be updated (run `prisma.migrate.up` in test env every time the [schema.prisma](/prisma/schema.prisma) is updated).
 
 Each test suite will do (see [testUtils.ts](/src/tests/helpers/testUtils.ts)):
 
@@ -80,7 +80,7 @@ Each test suite will do (see [testUtils.ts](/src/tests/helpers/testUtils.ts)):
 2. start the backend server, the port is choosen using [arbitrary-unused-port](https://github.com/ntkme/arbitrary-unused-port)
 3. seed the copied db with 'dummy' data that test will use it.
 4. run tests
-5. clean test environment (close backend server, photon connection and delete the copied sqlite db)
+5. clean test environment (close backend server, Prisma-Client connection and delete the copied sqlite db)
 
 ## Todo
 

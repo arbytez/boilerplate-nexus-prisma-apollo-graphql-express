@@ -19,15 +19,15 @@ const schema = makeSchema({
     typegen: path.join(__dirname, '..', '..', '@types', 'nexus-typegen', 'index.d.ts'),
   },
   typegenAutoConfig: {
-    contextType: 'Context.Context',
+    contextType: 'ctx.Context',
     sources: [
       {
-        source: '@prisma/photon',
-        alias: 'photon',
+        source: '@prisma/client',
+        alias: 'prismaClient',
       },
       {
         source: require.resolve('../context'),
-        alias: 'Context',
+        alias: 'ctx',
       },
     ],
   },

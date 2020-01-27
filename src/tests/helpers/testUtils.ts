@@ -3,14 +3,14 @@ import { join } from 'path';
 import http from 'http';
 import { v4 } from 'uuid';
 import { GraphQLClient } from 'graphql-request';
-import { Photon, Role, User, Todo } from '@prisma/photon';
+import { PrismaClient, Role, User, Todo } from '@prisma/client';
 
 import { hashPassword, generateToken } from '../../helpers/auth';
 import { wait } from '../../helpers/utils';
 
 export interface TestEnvironment {
   server: http.Server;
-  photon: Photon;
+  prismaClient: PrismaClient;
   newDbPath: string;
   graphQLClient: GraphQLClient;
 }
@@ -36,12 +36,12 @@ export const createNewTestEnvironment = (): TestEnvironment => {
   const newDbDestination = join(__dirname, '..', 'db', 'generated', `${newDbName}.sqlite`);
   fs.copyFileSync(originalDb, newDbDestination);
   process.env.SQLITE_URL = `file:${newDbDestination}`;
-  // start server and get photon instance
+  // start server and get prismaClient instance
   const server = require('../../server/initServer');
-  const photon = require('../../server/photon');
+  const prismaClient = require('../../server/prismaClient');
   return {
     server: server.default,
-    photon: photon.default,
+    prismaClient: prismaClient.default,
     newDbPath: newDbDestination,
     graphQLClient: new GraphQLClient(`http://localhost:${process.env.PORT}/graphql`),
   };
@@ -49,7 +49,7 @@ export const createNewTestEnvironment = (): TestEnvironment => {
 
 export const cleanTestEnvironment = async (testEnvironment: TestEnvironment) => {
   await testEnvironment.server.close();
-  await testEnvironment.photon.disconnect();
+  await testEnvironment.prismaClient.disconnect();
   await wait(2000); // sqlite file is locked, must wait a bit before unlink
   fs.unlinkSync(testEnvironment.newDbPath);
 };
@@ -57,7 +57,7 @@ export const cleanTestEnvironment = async (testEnvironment: TestEnvironment) => 
 export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Promise<DbData> => {
   // create 1 user for every role
   const testUserPassword = await hashPassword('testUser');
-  const testUser = await testEnvironment.photon.users.create({
+  const testUser = await testEnvironment.prismaClient.users.create({
     data: {
       email: 'testUser@example.com',
       password: testUserPassword,
@@ -67,7 +67,7 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const userToken = generateToken(testUser);
   const adminUserPassword = await hashPassword('adminUser');
-  const adminUser = await testEnvironment.photon.users.create({
+  const adminUser = await testEnvironment.prismaClient.users.create({
     data: {
       email: 'adminUser@example.com',
       password: adminUserPassword,
@@ -77,7 +77,7 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const adminToken = generateToken(adminUser);
   const rootUserPassword = await hashPassword('rootUser');
-  const rootUser = await testEnvironment.photon.users.create({
+  const rootUser = await testEnvironment.prismaClient.users.create({
     data: {
       email: 'rootUser@example.com',
       password: rootUserPassword,
@@ -87,27 +87,27 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const rootToken = generateToken(rootUser);
   // create 2 todos for every user
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'testUser1', done: false, user: { connect: { id: testUser.id } } },
   });
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'testUser2', done: true, user: { connect: { id: testUser.id } } },
   });
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'adminUser1', done: false, user: { connect: { id: adminUser.id } } },
   });
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'adminUser2', done: true, user: { connect: { id: adminUser.id } } },
   });
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'rootUser1', done: false, user: { connect: { id: rootUser.id } } },
   });
-  await testEnvironment.photon.todos.create({
+  await testEnvironment.prismaClient.todos.create({
     data: { content: 'rootUser2', done: true, user: { connect: { id: rootUser.id } } },
   });
   return {
-    todos: await testEnvironment.photon.todos.findMany(),
-    users: await testEnvironment.photon.users.findMany(),
+    todos: await testEnvironment.prismaClient.todos.findMany(),
+    users: await testEnvironment.prismaClient.users.findMany(),
     userToken,
     adminToken,
     rootToken,

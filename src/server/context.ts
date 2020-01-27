@@ -1,4 +1,4 @@
-import { Photon, User } from '@prisma/photon';
+import { PrismaClient, User } from '@prisma/client';
 import { Request, Response } from 'express-serve-static-core';
 import { ExecutionParams } from 'subscriptions-transport-ws';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
@@ -16,6 +16,6 @@ export interface Context {
   connection?: CustomExecutionParams;
   user?: User;
   userId?: string | number;
-  photon: Photon;
+  prisma: PrismaClient;
   pubsub: RedisPubSub;
 }

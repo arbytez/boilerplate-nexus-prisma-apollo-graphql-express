@@ -38,7 +38,7 @@ switch (process.env.NODE_ENV) {
     scriptsToExport = {
       default: {
         description: 'clean, build and start the server in production',
-        script: series.nps('prisma.lift.up', 'build', 'start'),
+        script: series.nps('prisma.migrate.up', 'build', 'start'),
       },
       start: 'node dist/',
     };
@@ -80,21 +80,22 @@ const commonScriptsToExport = {
     default: series.nps('clean.all'),
   },
   generate: {
-    photon: 'prisma2 generate',
+    prismaClient: 'prisma2 generate',
     nexus: 'cross-env NODE_ENV=development TRANSPILE_ONLY=true ts-node --transpile-only ./src/server/schema',
     graphqlCodegen: 'graphql-codegen',
     cnt: 'cnt --schema ./prisma/schema.prisma --outDir ./src/server/generated --mq -f -o',
     ct: 'create-types --schema ./prisma/schema.prisma --outDir ./src/server/generated',
-    default: series.nps('clean.generated', 'clean.nexus', 'generate.photon', 'generate.nexus'),
+    default: series.nps('clean.generated', 'clean.nexus', 'generate.prismaClient', 'generate.nexus'),
   },
   prisma: {
-    lift: {
-      save: 'prisma2 lift save',
-      up: 'prisma2 lift up',
-      down: 'prisma2 lift down',
-      default: series.nps('prisma.lift.save'),
+    migrate: {
+      save: 'prisma2 migrate save --experimental',
+      up: 'prisma2 migrate up --experimental',
+      down: 'prisma2 migrate down --experimental',
+      default: series.nps('prisma.migrate.save'),
     },
-    dev: 'prisma2 dev',
+    studio: 'prisma2 studio',
+    introspect: 'prisma2 introspect',
   },
   fixMissingDeclarations: series('dts-gen -m xss-clean -f ./node_modules/xss-clean/lib/index.d.ts -o'),
 };

@@ -1,4 +1,4 @@
-import { Role, User } from '@prisma/photon';
+import { Role, User } from '@prisma/client';
 
 import { signInMutation, signUpMutation, signOutMutation, meQuery } from './authQueries';
 import {

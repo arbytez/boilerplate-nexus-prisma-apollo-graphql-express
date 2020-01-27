@@ -47,7 +47,7 @@ export const todoMutation = extendType({
       },
       async resolve(_root, { input: { content, done } }, ctx, _info) {
         content = content.trim();
-        const newTodo = await ctx.photon.todos.create({
+        const newTodo = await ctx.prisma.todos.create({
           data: { content, done, user: { connect: { id: String(ctx.userId) } } },
         });
         const todoSubscriptionPayload = {
@@ -70,11 +70,11 @@ export const todoMutation = extendType({
         const updatedFields: string[] = [];
         if (typeof content === 'string') updatedFields.push('content');
         if (typeof done === 'boolean') updatedFields.push('done');
-        const todoToUpdate = await ctx.photon.todos.findOne({ where: { id }, include: { user: true } });
+        const todoToUpdate = await ctx.prisma.todos.findOne({ where: { id }, include: { user: true } });
         if (!todoToUpdate) {
           throw createApolloError(ErrorCode.RESOURCE_ID_NOT_FOUND, [id]);
         }
-        const todoUpdated = await ctx.photon.todos.update({ where: { id }, data: { content, done } });
+        const todoUpdated = await ctx.prisma.todos.update({ where: { id }, data: { content, done } });
         const todoSubscriptionPayload = {
           mutation: MutationType.UPDATED,
           node: { ...todoUpdated },
@@ -91,11 +91,11 @@ export const todoMutation = extendType({
         input: arg({ type: 'DeleteTodoInput', nullable: false }),
       },
       async resolve(_root, { input: { id } }, ctx, _info) {
-        const todoToDelete = await ctx.photon.todos.findOne({ where: { id }, include: { user: true } });
+        const todoToDelete = await ctx.prisma.todos.findOne({ where: { id }, include: { user: true } });
         if (!todoToDelete) {
           throw createApolloError(ErrorCode.RESOURCE_ID_NOT_FOUND, [id]);
         }
-        const todoDeleted = await ctx.photon.todos.delete({ where: { id } });
+        const todoDeleted = await ctx.prisma.todos.delete({ where: { id } });
         const todoSubscriptionPayload = {
           mutation: MutationType.DELETED,
           node: { ...todoDeleted },

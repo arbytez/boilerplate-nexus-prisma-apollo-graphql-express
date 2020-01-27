@@ -2,7 +2,6 @@ node_modules
 dist
 logs
 generated
-photon
 src/@types/nexus-typegen
 config/*.json
 .vscode

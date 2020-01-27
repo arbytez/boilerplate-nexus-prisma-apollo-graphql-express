@@ -1,4 +1,4 @@
-import { Role } from '@prisma/photon';
+import { Role } from '@prisma/client';
 import { mutationType, extendType, stringArg, queryType, inputObjectType, arg } from 'nexus';
 
 import { ErrorCode } from '../enums';
@@ -47,12 +47,12 @@ export const Mutation = extendType({
       async resolve(_root, { input: { email, password, username } }, ctx, _info) {
         email = email.trim();
         username = username.trim();
-        const existingUser = await ctx.photon.users.findOne({ where: { email } });
+        const existingUser = await ctx.prisma.users.findOne({ where: { email } });
         if (existingUser) {
           throw createApolloError(ErrorCode.EMAIL_ALREADY_IN_USE, [email]);
         }
         password = await hashPassword(password!);
-        const user = await ctx.photon.users.create({
+        const user = await ctx.prisma.users.create({
           data: { email: email!, password, username: username!, role: Role.USER },
         });
         const token = generateToken(user);
@@ -68,7 +68,7 @@ export const Mutation = extendType({
       },
       async resolve(_root, { input: { email, password } }, ctx, _info) {
         email = email.trim();
-        const user = await ctx.photon.users.findOne({ where: { email } });
+        const user = await ctx.prisma.users.findOne({ where: { email } });
         if (!user) {
           throw createApolloError(ErrorCode.USER_NOT_FOUND, [email]);
         }

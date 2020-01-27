@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 import { GraphQLError } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
-import { User } from '@prisma/photon';
+import { User } from '@prisma/client';
 
 import pubsub from './pubsub';
 import signale from '../logger';
@@ -11,7 +11,7 @@ import { getTokenFromReq } from '../helpers/utils';
 import { validateToken } from '../helpers/auth';
 import schema from './schema';
 import { ErrorCode } from './enums';
-import photon from './photon';
+import prismaClient from './prismaClient';
 import { definitionLimit, depthLimit, fieldLimit } from './validation';
 
 const validationRules =
@@ -28,7 +28,7 @@ function createServer() {
       if (connection && payload && payload.authorization) {
         const decodedToken = validateToken(payload.authorization);
         if (decodedToken) {
-          const user = await photon.users.findOne({ where: { id: decodedToken.userId } });
+          const user = await prismaClient.users.findOne({ where: { id: decodedToken.userId } });
           if (user) {
             req.user = user;
           }
@@ -40,7 +40,7 @@ function createServer() {
         connection,
         user: req ? (req.user as User) : undefined,
         userId: req && req.user ? (req.user as User).id : undefined,
-        photon,
+        prisma: prismaClient,
         pubsub,
       };
       return custCtx;
@@ -51,7 +51,7 @@ function createServer() {
           const decodedToken = validateToken(connectionParams.authorization);
           if (decodedToken) {
             const userId = decodedToken.userId;
-            const user = await photon.users.findOne({ where: { id: userId } });
+            const user = await prismaClient.users.findOne({ where: { id: userId } });
             return { userId, user };
           }
         }
@@ -61,7 +61,7 @@ function createServer() {
             const decodedToken = validateToken(token);
             if (decodedToken) {
               const userId = decodedToken.userId;
-              const user = await photon.users.findOne({ where: { id: userId } });
+              const user = await prismaClient.users.findOne({ where: { id: userId } });
               return { userId, user };
             }
           }
