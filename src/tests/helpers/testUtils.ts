@@ -57,7 +57,7 @@ export const cleanTestEnvironment = async (testEnvironment: TestEnvironment) => 
 export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Promise<DbData> => {
   // create 1 user for every role
   const testUserPassword = await hashPassword('testUser');
-  const testUser = await testEnvironment.prismaClient.users.create({
+  const testUser = await testEnvironment.prismaClient.user.create({
     data: {
       email: 'testUser@example.com',
       password: testUserPassword,
@@ -67,7 +67,7 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const userToken = generateToken(testUser);
   const adminUserPassword = await hashPassword('adminUser');
-  const adminUser = await testEnvironment.prismaClient.users.create({
+  const adminUser = await testEnvironment.prismaClient.user.create({
     data: {
       email: 'adminUser@example.com',
       password: adminUserPassword,
@@ -77,7 +77,7 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const adminToken = generateToken(adminUser);
   const rootUserPassword = await hashPassword('rootUser');
-  const rootUser = await testEnvironment.prismaClient.users.create({
+  const rootUser = await testEnvironment.prismaClient.user.create({
     data: {
       email: 'rootUser@example.com',
       password: rootUserPassword,
@@ -87,27 +87,27 @@ export const seedTestEnvironment = async (testEnvironment: TestEnvironment): Pro
   });
   const rootToken = generateToken(rootUser);
   // create 2 todos for every user
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'testUser1', done: false, user: { connect: { id: testUser.id } } },
   });
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'testUser2', done: true, user: { connect: { id: testUser.id } } },
   });
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'adminUser1', done: false, user: { connect: { id: adminUser.id } } },
   });
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'adminUser2', done: true, user: { connect: { id: adminUser.id } } },
   });
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'rootUser1', done: false, user: { connect: { id: rootUser.id } } },
   });
-  await testEnvironment.prismaClient.todos.create({
+  await testEnvironment.prismaClient.todo.create({
     data: { content: 'rootUser2', done: true, user: { connect: { id: rootUser.id } } },
   });
   return {
-    todos: await testEnvironment.prismaClient.todos.findMany(),
-    users: await testEnvironment.prismaClient.users.findMany(),
+    todos: await testEnvironment.prismaClient.todo.findMany(),
+    users: await testEnvironment.prismaClient.user.findMany(),
     userToken,
     adminToken,
     rootToken,

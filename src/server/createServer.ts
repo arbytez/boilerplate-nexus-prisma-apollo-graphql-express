@@ -28,7 +28,7 @@ function createServer() {
       if (connection && payload && payload.authorization) {
         const decodedToken = validateToken(payload.authorization);
         if (decodedToken) {
-          const user = await prismaClient.users.findOne({ where: { id: decodedToken.userId } });
+          const user = await prismaClient.user.findOne({ where: { id: decodedToken.userId } });
           if (user) {
             req.user = user;
           }
@@ -51,7 +51,7 @@ function createServer() {
           const decodedToken = validateToken(connectionParams.authorization);
           if (decodedToken) {
             const userId = decodedToken.userId;
-            const user = await prismaClient.users.findOne({ where: { id: userId } });
+            const user = await prismaClient.user.findOne({ where: { id: userId } });
             return { userId, user };
           }
         }
@@ -61,7 +61,7 @@ function createServer() {
             const decodedToken = validateToken(token);
             if (decodedToken) {
               const userId = decodedToken.userId;
-              const user = await prismaClient.users.findOne({ where: { id: userId } });
+              const user = await prismaClient.user.findOne({ where: { id: userId } });
               return { userId, user };
             }
           }

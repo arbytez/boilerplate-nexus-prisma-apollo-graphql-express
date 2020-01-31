@@ -27,7 +27,7 @@ export const isUser = rule({ cache: 'contextual' })(async (parent, args, ctx: Co
 });
 
 export const isTodoOwner = rule({ cache: 'strict' })(async (parent, args, ctx: Context, info) => {
-  const todo = await prismaClient.todos.findOne({ where: { id: args.input.id }, include: { user: true } });
+  const todo = await prismaClient.todo.findOne({ where: { id: args.input.id }, include: { user: true } });
   return Boolean(ctx.userId && todo && todo.user.id === ctx.userId);
 });
 
