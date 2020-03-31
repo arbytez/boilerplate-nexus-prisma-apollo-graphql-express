@@ -62,9 +62,13 @@ app.use((req, _res, next) => {
 app.use(async (req, _res, next) => {
   // if they aren't logged in, skip this
   if (!req.userId) return next();
-  const user = await prismaClient.user.findOne({ where: { id: String(req.userId) } });
-  if (user) {
-    req.user = user;
+  try {
+    const user = await prismaClient.user.findOne({ where: { id: String(req.userId) } });
+    if (user) {
+      req.user = user;
+    }
+  } catch (error) {
+    signale.error(error);
   }
   next();
 });
