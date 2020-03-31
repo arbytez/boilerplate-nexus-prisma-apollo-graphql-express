@@ -80,6 +80,7 @@ function createServer() {
           );
         }
         if (
+          error?.extensions?.code !== ErrorCode.INTERNAL_ERROR &&
           error?.extensions?.code !== ErrorCode.UNKNOWN &&
           (error?.extensions?.code in ErrorCode ||
             error?.extensions?.code === 'GRAPHQL_PARSE_FAILED' ||

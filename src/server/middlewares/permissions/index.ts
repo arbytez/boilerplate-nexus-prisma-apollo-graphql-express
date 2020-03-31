@@ -1,3 +1,4 @@
+import { ApolloError } from 'apollo-server-express';
 import { shield, and, or, not, allow, deny } from 'graphql-shield';
 
 import { ErrorCode } from '../../enums';
@@ -13,6 +14,7 @@ import {
   checkFirstField,
   checkLastField,
 } from './inputRules';
+import signale from '../../../logger';
 
 const rateLimitRuleConfig =
   process.env.NODE_ENV === 'production' ? { window: '30s', max: 10 } : { window: '30s', max: 9999 };
@@ -77,6 +79,20 @@ export default shield(
     },
   },
   {
-    fallbackError: createApolloError(ErrorCode.NOT_AUTHORIZED),
+    fallbackError: (err, parent, args, context, info) => {
+      if (err instanceof ApolloError) {
+        // expected errors
+        return err;
+      } else if (err instanceof Error) {
+        // unexpected errors
+        signale.error(err);
+        return createApolloError(ErrorCode.INTERNAL_ERROR);
+      } else {
+        // what the hell got thrown
+        signale.error('The resolver threw something that is not an error.');
+        signale.error(err);
+        return createApolloError(ErrorCode.INTERNAL_ERROR);
+      }
+    },
   }
 );

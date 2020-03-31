@@ -87,6 +87,8 @@ export const createApolloError = (code: ErrorCode, ...args: any[]) => {
       return new ApolloError('Not authorized', code);
     case ErrorCode.VALIDATION_FAILED:
       return new ApolloError('Validation failed', code, { validationErrors: args });
+    case ErrorCode.INTERNAL_ERROR:
+      return new ApolloError('Internal Error', code);
     default:
       return new ApolloError('Unknown error', ErrorCode.UNKNOWN);
   }
