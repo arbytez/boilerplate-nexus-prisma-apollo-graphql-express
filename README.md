@@ -1,6 +1,6 @@
 # ✨ Boilerplate project for nexus-prisma apollo-express-graphql backend server
 
-> ⚠️ **_Disclaimer_**: the project uses the [_prisma2 framework_](https://github.com/prisma/prisma2) that is not ready for **production** yet. See [**`isprisma2ready.com`**](https://www.isprisma2ready.com).
+> ⚠️ **_Disclaimer_**: the project uses the [_prisma framework_](https://github.com/prisma/prisma) that is not ready for **production** yet. See [**`isprisma2ready.com`**](https://www.isprisma2ready.com).
 
 > Code written using nodejs version LTS `>= 12.x.x`.
 
@@ -47,13 +47,10 @@ config/production.env                       # for production
 - `JWT_SECRET` jsonwebtoken secret for auth operations
 - `JWT_TOKEN_EXPIRES_SEC_IN` amount of seconds that the generated jwt token will be valid
 - `PORT` server port, default _4000_
-- `POSTGRES_URL` postgres db access url
-- `POSTGRES_URL_ENABLED` true/false, see [switching-data-sources-based-on-environments](https://github.com/prisma/prisma2/blob/master/docs/prisma-schema-file.md#switching-data-sources-based-on-environments) and [supported-databases](https://github.com/prisma/prisma2/blob/master/docs/supported-databases.md)
+- `DATABASE_URL` database (postgres) db access url
 - `REDIS_HOST` redis db hostname, used for graphql subscriptions
 - `REDIS_PASSWORD` redis db password
 - `REDIS_PORT` redis db port, default _6379_
-- `SQLITE_URL` sqlite db url, db used for tests
-- `SQLITE_URL_ENABLED` true/false, like `POSTGRES_URL_ENABLED` env variable
 - `WRITE_CUSTOM_LOG_TO_FILE` yes/no, write log only to console or console and filesystem
 
 ## Graphql server security
@@ -70,9 +67,11 @@ config/production.env                       # for production
   - [graphql-shield](https://github.com/maticzav/graphql-shield) 🛡️
   - for query limiting: input field rules have been used. ([first, last field](/src/server/middlewares/permissions/inputRules.ts))
 
-## Tests
+## ~~Tests~~
 
-Before run `npm run test`, set the `config/test.env` file and run `npm run test prisma.migrate.up` (check [prisma2 docs](https://github.com/prisma/prisma2/tree/master/docs) to see the correct flow to follow). This command will set your sqlite db on `/src/tests/db/data.sqlite`. This db should not contain data and schema must be updated (run `prisma.migrate.up` in test env every time the [schema.prisma](/prisma/schema.prisma) is updated).
+> ⚠️ with the latest versions the property `enabled` on `datasource` section on [schema.prisma](/prisma/schema.prisma) is no longer available and since the test environment changes the db source dynamically for every test cases, for the moment, it is not possible to run the test suite.
+
+Before run `npm run test`, set the `config/test.env` file and run `npm run test prisma.migrate.up` (check [prisma docs](https://www.prisma.io/docs/) to see the correct flow to follow). This command will set your sqlite db on `/src/tests/db/data.sqlite`. This db should not contain data and schema must be updated (run `prisma.migrate.up` in test env every time the [schema.prisma](/prisma/schema.prisma) is updated).
 
 Each test suite will do (see [testUtils.ts](/src/tests/helpers/testUtils.ts)):
 

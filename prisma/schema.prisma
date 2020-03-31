@@ -2,22 +2,13 @@ generator prisma_client {
   provider = "prisma-client-js"
 }
 
-datasource pg {
+datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL")
-  enabled  = env("POSTGRES_URL_ENABLED")
-}
-
-datasource sqlite {
-  provider = "sqlite"
-  url      = env("SQLITE_URL")
-  enabled  = env("SQLITE_URL_ENABLED")
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
-  USER
-  ADMIN
-  ROOT
+  USER ADMIN ROOT
 }
 
 model User {

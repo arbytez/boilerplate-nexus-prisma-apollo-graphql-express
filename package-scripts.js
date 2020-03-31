@@ -24,7 +24,7 @@ switch (process.env.NODE_ENV) {
     envPath = path.join(__dirname, 'config', 'test.env');
     const sqliteDbPath = path.join(__dirname, 'src', 'tests', 'db');
     if (!fs.existsSync(sqliteDbPath)) fs.mkdirSync(sqliteDbPath);
-    process.env.SQLITE_URL = `file:${path.join(sqliteDbPath, 'data.sqlite')}`;
+    process.env.DATABASE_URL = `file:${path.join(sqliteDbPath, 'data.sqlite')}`;
     break;
   default:
     throw new Error(`NODE_ENV '${process.env.NODE_ENV}' not managed!`);
@@ -82,7 +82,7 @@ const commonScriptsToExport = {
     default: series.nps('clean.all'),
   },
   generate: {
-    prismaClient: 'prisma2 generate',
+    prismaClient: 'prisma generate',
     nexus: 'cross-env NODE_ENV=development TRANSPILE_ONLY=true ts-node --transpile-only ./src/server/schema',
     graphqlCodegen: 'graphql-codegen',
     graphdoc: 'graphdoc -s ./src/server/generated/schema.graphql -o ./graphdoc',
@@ -99,12 +99,12 @@ const commonScriptsToExport = {
   },
   prisma: {
     migrate: {
-      save: 'prisma2 migrate save --experimental',
-      up: 'prisma2 migrate up --experimental',
-      down: 'prisma2 migrate down --experimental',
+      save: 'prisma migrate save --experimental',
+      up: 'prisma migrate up --experimental',
+      down: 'prisma migrate down --experimental',
       default: series.nps('prisma.migrate.save'),
     },
-    studio: 'prisma2 studio',
+    studio: 'prisma studio --experimental',
     introspect: 'prisma2 introspect',
   },
   fixMissingDeclarations: series('dts-gen -m xss-clean -f ./node_modules/xss-clean/lib/index.d.ts -o'),

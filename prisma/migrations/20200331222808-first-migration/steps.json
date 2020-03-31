@@ -12,13 +12,13 @@
     },
     {
       "tag": "CreateSource",
-      "source": "pg"
+      "source": "db"
     },
     {
       "tag": "CreateArgument",
       "location": {
         "tag": "Source",
-        "source": "pg"
+        "source": "db"
       },
       "argument": "provider",
       "value": "\"postgresql\""
@@ -27,50 +27,10 @@
       "tag": "CreateArgument",
       "location": {
         "tag": "Source",
-        "source": "pg"
+        "source": "db"
       },
       "argument": "url",
-      "value": "env(\"POSTGRES_URL\")"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Source",
-        "source": "pg"
-      },
-      "argument": "enabled",
-      "value": "env(\"POSTGRES_URL_ENABLED\")"
-    },
-    {
-      "tag": "CreateSource",
-      "source": "sqlite"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Source",
-        "source": "sqlite"
-      },
-      "argument": "provider",
-      "value": "\"sqlite\""
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Source",
-        "source": "sqlite"
-      },
-      "argument": "url",
-      "value": "env(\"SQLITE_URL\")"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Source",
-        "source": "sqlite"
-      },
-      "argument": "enabled",
-      "value": "env(\"SQLITE_URL_ENABLED\")"
+      "value": "env(\"DATABASE_URL\")"
     },
     {
       "tag": "CreateModel",
