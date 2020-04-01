@@ -5,7 +5,6 @@ import { createRateLimitRule, RedisStore } from 'graphql-rate-limit';
 
 import { Context } from '../../context';
 import { redisOptions } from '../../../server/pubsub';
-import prismaClient from '../../prismaClient';
 
 export const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
   if (ctx.connection) {
@@ -27,7 +26,7 @@ export const isUser = rule({ cache: 'contextual' })(async (parent, args, ctx: Co
 });
 
 export const isTodoOwner = rule({ cache: 'strict' })(async (parent, args, ctx: Context, info) => {
-  const todo = await prismaClient.todo.findOne({ where: { id: args.input.id }, include: { user: true } });
+  const todo = await ctx.prisma.todo.findOne({ where: { id: args.input.id }, include: { user: true } });
   return Boolean(ctx.userId && todo && todo.user.id === ctx.userId);
 });
 

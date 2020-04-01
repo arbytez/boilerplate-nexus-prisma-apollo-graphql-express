@@ -1,4 +1,5 @@
 import { ApolloError } from 'apollo-server-express';
+import { IOptionsConstructor } from 'graphql-shield/dist/types';
 import { shield, and, or, not, allow, deny } from 'graphql-shield';
 
 import { ErrorCode } from '../../enums';
@@ -20,6 +21,22 @@ const rateLimitRuleConfig =
   process.env.NODE_ENV === 'production' ? { window: '30s', max: 10 } : { window: '30s', max: 9999 };
 const rateLimit = rateLimitRule(rateLimitRuleConfig);
 
+const shieldOptions: IOptionsConstructor = {
+  fallbackError: (err, parent, args, context, info) => {
+    if (err instanceof ApolloError) {
+      // expected errors
+      return err;
+    }
+    if (err instanceof Error) {
+      // unexpected errors
+      signale.error(err);
+      return createApolloError(ErrorCode.INTERNAL_ERROR);
+    }
+    // a rule did not pass -> NOT_AUTHORIZED
+    return createApolloError(ErrorCode.NOT_AUTHORIZED);
+  },
+};
+
 export default shield(
   {
     Query: {
@@ -33,9 +50,9 @@ export default shield(
     Mutation: {
       '*': deny,
       // auth
-      SignUp: and(rateLimit, not(isAuthenticated), validateSignUpInput),
-      SignIn: and(rateLimit, not(isAuthenticated), validateSignInInput),
-      SignOut: and(rateLimit, isAuthenticated),
+      SignUp: and(rateLimit, validateSignUpInput),
+      SignIn: and(rateLimit, validateSignInInput),
+      SignOut: rateLimit,
       // todo
       createTodo: and(rateLimit, isAuthenticated, validateCreateTodoInput),
       updateTodo: and(rateLimit, isAuthenticated, validateUpdateTodoInput, or(isTodoOwner, isAdmin, isRoot)),
@@ -78,21 +95,5 @@ export default shield(
       user: allow,
     },
   },
-  {
-    fallbackError: (err, parent, args, context, info) => {
-      if (err instanceof ApolloError) {
-        // expected errors
-        return err;
-      } else if (err instanceof Error) {
-        // unexpected errors
-        signale.error(err);
-        return createApolloError(ErrorCode.INTERNAL_ERROR);
-      } else {
-        // what the hell got thrown
-        signale.error('The resolver threw something that is not an error.');
-        signale.error(err);
-        return createApolloError(ErrorCode.INTERNAL_ERROR);
-      }
-    },
-  }
+  shieldOptions
 );

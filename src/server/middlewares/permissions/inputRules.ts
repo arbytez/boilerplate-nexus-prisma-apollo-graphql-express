@@ -12,7 +12,7 @@ import {
 export const validateSignUpInput = inputRule()(
   yup =>
     yup.object({
-      input: yup.object().shape({
+      input: yup.object({
         email: emailSchema.required(),
         username: usernameSchema.required(),
         password: passwordSchema.required(),
@@ -26,7 +26,7 @@ export const validateSignUpInput = inputRule()(
 export const validateSignInInput = inputRule()(
   yup =>
     yup.object({
-      input: yup.object().shape({
+      input: yup.object({
         email: emailSchema.required(),
         password: passwordSchema.required(),
       }),
@@ -39,7 +39,7 @@ export const validateSignInInput = inputRule()(
 export const validateCreateTodoInput = inputRule()(
   yup =>
     yup.object({
-      input: yup.object().shape({
+      input: yup.object({
         done: yup.bool().notRequired(),
         content: todoContentSchema.required(),
       }),
@@ -52,7 +52,7 @@ export const validateCreateTodoInput = inputRule()(
 export const validateUpdateTodoInput = inputRule()(
   yup =>
     yup.object({
-      input: yup.object().shape({
+      input: yup.object({
         id: yup
           .string()
           .max(50)
@@ -69,7 +69,7 @@ export const validateUpdateTodoInput = inputRule()(
 export const validateDeleteTodoInput = inputRule()(
   yup =>
     yup.object({
-      input: yup.object().shape({
+      input: yup.object({
         id: yup
           .string()
           .max(50)
@@ -103,7 +103,7 @@ export const checkLastField = inputRule()(
 
 export const checkFirstLastField = inputRule()(
   yup =>
-    yup.object().shape({
+    yup.object({
       first: firstFieldSchema,
       last: lastFieldSchema,
     }),
