@@ -28,5 +28,6 @@ model Todo {
   updatedAt DateTime @updatedAt
   done      Boolean
   content   String
-  user      User
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
 }
