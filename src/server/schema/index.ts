@@ -13,7 +13,13 @@ import * as Enums from '../enums';
 
 const schema = makeSchema({
   types: [User, Todo, authResolver, todoResolver, userResolver, Enums],
-  plugins: [nexusPrismaPlugin()],
+  plugins: [
+    nexusPrismaPlugin({
+      outputs: {
+        typegen: path.join(__dirname, '..', '..', '@types', 'nexus-prisma', 'index.d.ts'),
+      },
+    }),
+  ],
   outputs: {
     schema: path.join(__dirname, '..', 'generated', 'schema.graphql'),
     typegen: path.join(__dirname, '..', '..', '@types', 'nexus-typegen', 'index.d.ts'),

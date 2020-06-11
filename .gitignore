@@ -3,6 +3,7 @@ dist
 logs
 generated
 src/@types/nexus-typegen
+src/@types/nexus-prisma
 graphdoc
 config/*.json
 .vscode

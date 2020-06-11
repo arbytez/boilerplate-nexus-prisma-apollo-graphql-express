@@ -9,6 +9,7 @@ const cleanDist = rimraf('./dist');
 const cleanGenerated = rimraf('./src/server/generated');
 const cleanDbGenerated = rimraf('./src/tests/db/generated');
 const cleanNexusTypegen = rimraf('./src/@types/nexus-typegen');
+const cleanNexusPrisma = rimraf('./src/@types/nexus-prisma');
 const cleanGraphDoc = rimraf('./graphdoc');
 
 // read env variables
@@ -78,12 +79,14 @@ const commonScriptsToExport = {
     generated: series(cleanGenerated),
     db: series(cleanDbGenerated),
     nexus: series(cleanNexusTypegen),
+    nexusPrisma: series(cleanNexusPrisma),
     graphdoc: series(cleanGraphDoc),
     all: concurrent.nps(
       'clean.dist',
       'clean.generated',
       'clean.db',
       'clean.nexus',
+      'clean.nexusPrisma',
       'clean.graphdoc',
     ),
     default: series.nps('clean.all'),
@@ -99,6 +102,7 @@ const commonScriptsToExport = {
     default: series.nps(
       'clean.generated',
       'clean.nexus',
+      'clean.nexusPrisma',
       'clean.graphdoc',
       'generate.prismaClient',
       'generate.nexus',
