@@ -10,7 +10,7 @@ import {
 } from './validationsSchema';
 
 export const validateSignUpInput = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       input: yup.object({
         email: emailSchema.required(),
@@ -20,11 +20,11 @@ export const validateSignUpInput = inputRule()(
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const validateSignInInput = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       input: yup.object({
         email: emailSchema.required(),
@@ -33,11 +33,11 @@ export const validateSignInInput = inputRule()(
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const validateCreateTodoInput = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       input: yup.object({
         done: yup.bool().notRequired(),
@@ -46,68 +46,62 @@ export const validateCreateTodoInput = inputRule()(
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const validateUpdateTodoInput = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       input: yup.object({
-        id: yup
-          .string()
-          .max(50)
-          .required(),
+        id: yup.string().max(50).required(),
         done: yup.bool().notRequired(),
         content: todoContentSchema.notRequired(),
       }),
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const validateDeleteTodoInput = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       input: yup.object({
-        id: yup
-          .string()
-          .max(50)
-          .required(),
+        id: yup.string().max(50).required(),
       }),
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const checkFirstField = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       first: firstFieldSchema.required(),
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const checkLastField = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       last: lastFieldSchema.required(),
     }),
   {
     abortEarly: false,
-  }
+  },
 );
 
 export const checkFirstLastField = inputRule()(
-  yup =>
+  (yup) =>
     yup.object({
       first: firstFieldSchema,
       last: lastFieldSchema,
     }),
   {
     abortEarly: false,
-  }
+  },
 );

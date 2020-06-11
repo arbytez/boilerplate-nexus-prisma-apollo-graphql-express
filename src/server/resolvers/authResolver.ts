@@ -1,8 +1,20 @@
 import { Role } from '@prisma/client';
-import { mutationType, extendType, stringArg, queryType, inputObjectType, arg } from 'nexus';
+import {
+  mutationType,
+  extendType,
+  stringArg,
+  queryType,
+  inputObjectType,
+  arg,
+} from '@nexus/schema';
 
 import { ErrorCode } from '../enums';
-import { setCookieInResponse, createApolloError, removeCookieInResponse, getTokenFromReq } from '../../helpers/utils';
+import {
+  setCookieInResponse,
+  createApolloError,
+  removeCookieInResponse,
+  getTokenFromReq,
+} from '../../helpers/utils';
 import { hashPassword, generateToken, comparePassword } from '../../helpers/auth';
 
 export const Query = extendType({

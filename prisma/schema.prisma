@@ -8,7 +8,9 @@ datasource db {
 }
 
 enum Role {
-  USER ADMIN ROOT
+  USER
+  ADMIN
+  ROOT
 }
 
 model User {

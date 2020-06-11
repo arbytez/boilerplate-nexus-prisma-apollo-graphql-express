@@ -73,10 +73,12 @@ function createServer() {
       try {
         if (error?.extensions?.code === ErrorCode.VALIDATION_FAILED) {
           const errMessages = error?.extensions?.validationErrors?.map((valErr: any) =>
-            valErr.map((err: any) => err.message)
+            valErr.map((err: any) => err.message),
           );
           return new GraphQLError(
-            errMessages[0].map((message: string) => message.replace('input.', '').replace('data.', ''))
+            errMessages[0].map((message: string) =>
+              message.replace('input.', '').replace('data.', ''),
+            ),
           );
         }
         if (
@@ -99,7 +101,7 @@ function createServer() {
           return new GraphQLError(
             error?.extensions?.exception?.errors
               .reverse()
-              .map((message: string) => message.replace('input.', '').replace('data.', ''))
+              .map((message: string) => message.replace('input.', '').replace('data.', '')),
           );
         }
         if (error?.extensions?.exception?.isRateLimitError) {

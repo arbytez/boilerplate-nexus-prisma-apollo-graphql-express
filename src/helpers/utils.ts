@@ -5,7 +5,7 @@ import { Context } from '../server/context';
 import { ErrorCode } from '../server/enums';
 
 export const wait = (msTime: number = 1000): Promise<void> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), msTime);
   });
 };
@@ -20,14 +20,14 @@ export const formatDuration = (ms: number): string => {
     millisecond: Math.floor(ms) % 1000,
   };
   return Object.entries(time)
-    .filter(val => val[1] !== 0)
+    .filter((val) => val[1] !== 0)
     .map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
     .join(', ');
 };
 
 export const getTokenFromReq = (req: Request): string => {
   try {
-    let token = req.headers['authorization'] || '';
+    let token = req.headers.authorization || '';
     if (!token) token = getCookieFromReq(req, 'token') || '';
     return token;
   } catch (error) {
@@ -65,7 +65,10 @@ export const obfuscateIp = (ip: string | undefined): string => {
   if (!ip) return 'n/a';
   const ipParts = ip.split('.');
   if (ipParts.length === 4) {
-    return `${ipParts[0]}.${ipParts[1]}.${ipParts[2].replace(/\d/g, 'x')}.${ipParts[3].replace(/\d/g, 'x')}`;
+    return `${ipParts[0]}.${ipParts[1]}.${ipParts[2].replace(/\d/g, 'x')}.${ipParts[3].replace(
+      /\d/g,
+      'x',
+    )}`;
   } else {
     return 'n/a';
   }

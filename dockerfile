@@ -7,4 +7,5 @@ COPY ./ /usr/src/app/
 WORKDIR /usr/src/app/
 
 RUN npm install
-CMD [ "npm", "run", "prod" ]
+RUN npm run prod build
+CMD [ "npm", "run", "prod", "start" ]

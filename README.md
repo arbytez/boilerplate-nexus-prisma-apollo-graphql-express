@@ -1,6 +1,6 @@
 # ✨ Boilerplate project for nexus-prisma apollo-express-graphql backend server
 
-> ⚠️ **_Disclaimer_**: the project uses the [_prisma framework_](https://github.com/prisma/prisma) that is not ready for **production** yet. See [**`isprisma2ready.com`**](https://www.isprisma2ready.com).
+> ~~⚠️ **_Disclaimer_**: the project uses the [_prisma framework_](https://github.com/prisma/prisma) that is not ready for **production** yet. See [**`isprisma2ready.com`**](https://www.isprisma2ready.com).~~
 
 > Code written using nodejs version LTS `>= 12.x.x`.
 
@@ -67,7 +67,7 @@ config/production.env                       # for production
   - [graphql-shield](https://github.com/maticzav/graphql-shield) 🛡️
   - for query limiting: input field rules have been used. ([first, last field](/src/server/middlewares/permissions/inputRules.ts))
 
-## ~~Tests~~
+## ~~Tests~~ (Broken [todo])
 
 > ⚠️ with the latest versions the property `enabled` on `datasource` section on [schema.prisma](/prisma/schema.prisma) is no longer available and since the test environment changes the db source dynamically for every test cases, for the moment, it is not possible to run the test suite.
 

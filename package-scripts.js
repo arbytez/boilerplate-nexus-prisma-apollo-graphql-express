@@ -20,12 +20,13 @@ switch (process.env.NODE_ENV) {
   case 'development':
     envPath = path.join(__dirname, 'config', 'development.env');
     break;
-  case 'test':
+  case 'test': {
     envPath = path.join(__dirname, 'config', 'test.env');
     const sqliteDbPath = path.join(__dirname, 'src', 'tests', 'db');
     if (!fs.existsSync(sqliteDbPath)) fs.mkdirSync(sqliteDbPath);
     process.env.DATABASE_URL = `file:${path.join(sqliteDbPath, 'data.sqlite')}`;
     break;
+  }
   default:
     throw new Error(`NODE_ENV '${process.env.NODE_ENV}' not managed!`);
 }
@@ -78,12 +79,19 @@ const commonScriptsToExport = {
     db: series(cleanDbGenerated),
     nexus: series(cleanNexusTypegen),
     graphdoc: series(cleanGraphDoc),
-    all: concurrent.nps('clean.dist', 'clean.generated', 'clean.db', 'clean.nexus', 'clean.graphdoc'),
+    all: concurrent.nps(
+      'clean.dist',
+      'clean.generated',
+      'clean.db',
+      'clean.nexus',
+      'clean.graphdoc',
+    ),
     default: series.nps('clean.all'),
   },
   generate: {
     prismaClient: 'prisma generate',
-    nexus: 'cross-env NODE_ENV=development TRANSPILE_ONLY=true ts-node --transpile-only ./src/server/schema',
+    nexus:
+      'cross-env NODE_ENV=development TRANSPILE_ONLY=true ts-node --transpile-only ./src/server/schema',
     graphqlCodegen: 'graphql-codegen',
     graphdoc: 'graphdoc -s ./src/server/generated/schema.graphql -o ./graphdoc',
     cnt: 'cnt --schema ./prisma/schema.prisma --outDir ./src/server/generated --mq -f -o',
@@ -94,7 +102,7 @@ const commonScriptsToExport = {
       'clean.graphdoc',
       'generate.prismaClient',
       'generate.nexus',
-      'generate.graphdoc'
+      'generate.graphdoc',
     ),
   },
   prisma: {
@@ -107,7 +115,9 @@ const commonScriptsToExport = {
     studio: 'prisma studio --experimental',
     introspect: 'prisma2 introspect',
   },
-  fixMissingDeclarations: series('dts-gen -m xss-clean -f ./node_modules/xss-clean/lib/index.d.ts -o'),
+  fixMissingDeclarations: series(
+    'dts-gen -m xss-clean -f ./node_modules/xss-clean/lib/index.d.ts -o',
+  ),
 };
 
 const scriptsOptions = { silent: false };

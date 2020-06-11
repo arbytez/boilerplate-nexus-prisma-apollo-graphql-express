@@ -6,12 +6,14 @@ import { createRateLimitRule, RedisStore } from 'graphql-rate-limit';
 import { Context } from '../../context';
 import { redisOptions } from '../../../server/pubsub';
 
-export const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
-  if (ctx.connection) {
-    return Boolean(ctx.connection.context.userId && ctx.connection.context.user);
-  }
-  return Boolean(ctx.userId && ctx.user);
-});
+export const isAuthenticated = rule({ cache: 'contextual' })(
+  async (parent, args, ctx: Context, info) => {
+    if (ctx.connection) {
+      return Boolean(ctx.connection.context.userId && ctx.connection.context.user);
+    }
+    return Boolean(ctx.userId && ctx.user);
+  },
+);
 
 export const isRoot = rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
   return Boolean(ctx.user && ctx.user.role === Role.ROOT);
@@ -26,7 +28,10 @@ export const isUser = rule({ cache: 'contextual' })(async (parent, args, ctx: Co
 });
 
 export const isTodoOwner = rule({ cache: 'strict' })(async (parent, args, ctx: Context, info) => {
-  const todo = await ctx.prisma.todo.findOne({ where: { id: args.input.id }, include: { user: true } });
+  const todo = await ctx.prisma.todo.findOne({
+    where: { id: args.input.id },
+    include: { user: true },
+  });
   return Boolean(ctx.userId && todo && todo.user.id === ctx.userId);
 });
 

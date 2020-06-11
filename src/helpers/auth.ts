@@ -17,7 +17,7 @@ export type DecodedToken =
   | undefined;
 
 export const validateToken = (token: string) => {
-  let decodedToken: DecodedToken = undefined;
+  let decodedToken: DecodedToken;
   try {
     decodedToken = jwt.verify(token, String(process.env.JWT_SECRET)) as DecodedToken;
   } catch (error) {}

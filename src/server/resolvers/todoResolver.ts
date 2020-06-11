@@ -1,4 +1,4 @@
-import { extendType, subscriptionField, inputObjectType, arg } from 'nexus';
+import { extendType, subscriptionField, inputObjectType, arg } from '@nexus/schema';
 
 import { SubscriptionTrigger, MutationType, ErrorCode } from '../enums';
 import { createApolloError } from '../../helpers/utils';
@@ -65,16 +65,22 @@ export const todoMutation = extendType({
       },
       async resolve(_root, { input }, ctx, _info) {
         const id = input.id;
-        const content = input.content;
-        const done = input.done;
+        const content = input.content || undefined;
+        const done = input.done || undefined;
         const updatedFields: string[] = [];
         if (typeof content === 'string') updatedFields.push('content');
         if (typeof done === 'boolean') updatedFields.push('done');
-        const todoToUpdate = await ctx.prisma.todo.findOne({ where: { id }, include: { user: true } });
+        const todoToUpdate = await ctx.prisma.todo.findOne({
+          where: { id },
+          include: { user: true },
+        });
         if (!todoToUpdate) {
           throw createApolloError(ErrorCode.RESOURCE_ID_NOT_FOUND, [id]);
         }
-        const todoUpdated = await ctx.prisma.todo.update({ where: { id }, data: { content, done } });
+        const todoUpdated = await ctx.prisma.todo.update({
+          where: { id },
+          data: { content, done },
+        });
         const todoSubscriptionPayload = {
           mutation: MutationType.UPDATED,
           node: { ...todoUpdated },
@@ -91,7 +97,10 @@ export const todoMutation = extendType({
         input: arg({ type: 'DeleteTodoInput', nullable: false }),
       },
       async resolve(_root, { input: { id } }, ctx, _info) {
-        const todoToDelete = await ctx.prisma.todo.findOne({ where: { id }, include: { user: true } });
+        const todoToDelete = await ctx.prisma.todo.findOne({
+          where: { id },
+          include: { user: true },
+        });
         if (!todoToDelete) {
           throw createApolloError(ErrorCode.RESOURCE_ID_NOT_FOUND, [id]);
         }
@@ -126,7 +135,7 @@ export const todoSubscription = subscriptionField('todoEvents', {
   subscribe: (_root, _args, ctx, _info) => {
     return ctx.pubsub.asyncIterator(SubscriptionTrigger.TODO_EVENT);
   },
-  resolve: payload => {
+  resolve: (payload) => {
     return payload;
   },
 });

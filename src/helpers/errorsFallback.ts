@@ -3,7 +3,7 @@ import signale from '../logger';
 import prismaClient from '../server/prismaClient';
 
 // catch all the unmanaged errors and stop script
-process.on('uncaughtException', async err => {
+process.on('uncaughtException', async (err) => {
   signale.fatal(err);
   try {
     await prismaClient.disconnect();
@@ -13,7 +13,7 @@ process.on('uncaughtException', async err => {
   process.exit(1);
 });
 
-process.on('unhandledRejection', async err => {
+process.on('unhandledRejection', async (err) => {
   signale.fatal(err);
   try {
     await prismaClient.disconnect();

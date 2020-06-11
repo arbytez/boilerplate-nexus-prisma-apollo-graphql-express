@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { enumType } from 'nexus';
+import { enumType } from '@nexus/schema';
 
 const subsServerId = v4();
 
