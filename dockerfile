@@ -10,4 +10,5 @@ RUN npm i -g pm2
 
 RUN npm i
 RUN npm run prod build
-CMD [ "npm", "run", "prod", "start" ]
+
+CMD [ "pm2-runtime", "start", "./dist/index.js", "-i 2", "--name NexusPrismaGraphqlApi" ]
