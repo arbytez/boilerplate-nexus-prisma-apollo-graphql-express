@@ -6,8 +6,6 @@ src/@types/nexus-typegen
 src/@types/nexus-prisma
 graphdoc
 config/*.json
-.vscode
-package-lock.json
 data.sqlite
 *.env
 !*.example.env

@@ -1,7 +1,7 @@
 import path from 'path';
 import { applyMiddleware } from 'graphql-middleware';
 import { makeSchema } from '@nexus/schema';
-import { nexusPrismaPlugin } from 'nexus-prisma';
+import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema';
 import { GraphQLSchemaWithFragmentReplacements } from 'graphql-middleware/dist/types';
 
 import * as User from './User';
@@ -14,7 +14,8 @@ import * as Enums from '../enums';
 const schema = makeSchema({
   types: [User, Todo, authResolver, todoResolver, userResolver, Enums],
   plugins: [
-    nexusPrismaPlugin({
+    nexusSchemaPrisma({
+      experimentalCRUD: true,
       outputs: {
         typegen: path.join(__dirname, '..', '..', '@types', 'nexus-prisma', 'index.d.ts'),
       },

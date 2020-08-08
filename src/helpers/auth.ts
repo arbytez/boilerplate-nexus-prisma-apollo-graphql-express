@@ -6,6 +6,7 @@ import { Context } from '../server/context';
 import { ErrorCode } from '../server/enums';
 import { createApolloError } from './utils';
 import prismaClient from '../server/prismaClient';
+import signale from '../logger';
 
 export type DecodedToken =
   | {
@@ -22,6 +23,20 @@ export const validateToken = (token: string) => {
     decodedToken = jwt.verify(token, String(process.env.JWT_SECRET)) as DecodedToken;
   } catch (error) {}
   return decodedToken;
+};
+
+export const validateTokenAndGetUser = async (token: string): Promise<User | null> => {
+  try {
+    const decodedToken = validateToken(token);
+    if (decodedToken) {
+      const user = await prismaClient.user.findOne({ where: { id: decodedToken.userId } });
+      return user;
+    }
+    return null;
+  } catch (error) {
+    signale.error(error);
+    return null;
+  }
 };
 
 export const generateToken = (user: User | { id: string | number }) => {

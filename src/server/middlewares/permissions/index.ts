@@ -5,7 +5,6 @@ import { shield, and, or, not, allow, deny } from 'graphql-shield';
 import { ErrorCode } from '../../enums';
 import { createApolloError } from '../../../helpers/utils';
 import { isAdmin, isAuthenticated, isRoot, isTodoOwner, isUserOwner, rateLimitRule } from './rules';
-import { checkFirstLastField } from './inputRules';
 import {
   validateSignInInput,
   validateSignUpInput,
@@ -14,6 +13,7 @@ import {
   validateDeleteTodoInput,
   checkFirstField,
   checkLastField,
+  checkFirstLastField,
 } from './inputRules';
 import signale from '../../../logger';
 
@@ -44,7 +44,11 @@ export default shield(
       todo: rateLimit,
       todos: and(rateLimit, and(or(checkFirstField, checkLastField), checkFirstLastField)),
       user: and(rateLimit, or(isAdmin, isRoot)),
-      users: and(rateLimit, and(or(checkFirstField, checkLastField), checkFirstLastField), or(isAdmin, isRoot)),
+      users: and(
+        rateLimit,
+        and(or(checkFirstField, checkLastField), checkFirstLastField),
+        or(isAdmin, isRoot),
+      ),
       Me: rateLimit,
     },
     Mutation: {
@@ -55,8 +59,18 @@ export default shield(
       SignOut: rateLimit,
       // todo
       createTodo: and(rateLimit, isAuthenticated, validateCreateTodoInput),
-      updateTodo: and(rateLimit, isAuthenticated, validateUpdateTodoInput, or(isTodoOwner, isAdmin, isRoot)),
-      deleteTodo: and(rateLimit, isAuthenticated, validateDeleteTodoInput, or(isTodoOwner, isAdmin, isRoot)),
+      updateTodo: and(
+        rateLimit,
+        isAuthenticated,
+        validateUpdateTodoInput,
+        or(isTodoOwner, isAdmin, isRoot),
+      ),
+      deleteTodo: and(
+        rateLimit,
+        isAuthenticated,
+        validateDeleteTodoInput,
+        or(isTodoOwner, isAdmin, isRoot),
+      ),
       createOneTodo: and(rateLimit, or(isAdmin, isRoot)),
       updateOneTodo: and(rateLimit, or(isAdmin, isRoot)),
       upsertOneTodo: and(rateLimit, or(isAdmin, isRoot)),
@@ -95,5 +109,5 @@ export default shield(
       user: allow,
     },
   },
-  shieldOptions
+  shieldOptions,
 );

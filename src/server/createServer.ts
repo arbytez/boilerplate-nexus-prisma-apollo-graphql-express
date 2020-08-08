@@ -8,7 +8,7 @@ import signale from '../logger';
 import { Context } from './context';
 import { CustomConnectionParams } from '../@types/apollo/index';
 import { getTokenFromReq } from '../helpers/utils';
-import { validateToken } from '../helpers/auth';
+import { validateToken, validateTokenAndGetUser } from '../helpers/auth';
 import schema from './schema';
 import { ErrorCode } from './enums';
 import prismaClient from './prismaClient';
@@ -26,12 +26,9 @@ function createServer() {
     // @ts-ignore
     context: async ({ req, res, connection, payload }) => {
       if (connection && payload && payload.authorization) {
-        const decodedToken = validateToken(payload.authorization);
-        if (decodedToken) {
-          const user = await prismaClient.user.findOne({ where: { id: decodedToken.userId } });
-          if (user) {
-            req.user = user;
-          }
+        const user = await validateTokenAndGetUser(payload.authorization);
+        if (user) {
+          req.user = user;
         }
       }
       const custCtx: Context = {
@@ -48,22 +45,16 @@ function createServer() {
     subscriptions: {
       onConnect: async (connectionParams: CustomConnectionParams, webSocket: any) => {
         if (connectionParams && connectionParams.authorization) {
-          const decodedToken = validateToken(connectionParams.authorization);
-          if (decodedToken) {
-            const userId = decodedToken.userId;
-            const user = await prismaClient.user.findOne({ where: { id: userId } });
-            return { userId, user };
+          const user = await validateTokenAndGetUser(connectionParams.authorization);
+          if (user) {
+            return { userId: user.id, user };
           }
         }
         if (webSocket && webSocket.upgradeReq) {
           const token = getTokenFromReq(webSocket.upgradeReq);
-          if (token) {
-            const decodedToken = validateToken(token);
-            if (decodedToken) {
-              const userId = decodedToken.userId;
-              const user = await prismaClient.user.findOne({ where: { id: userId } });
-              return { userId, user };
-            }
+          const user = await validateTokenAndGetUser(token);
+          if (user) {
+            return { userId: user.id, user };
           }
         }
         return {};

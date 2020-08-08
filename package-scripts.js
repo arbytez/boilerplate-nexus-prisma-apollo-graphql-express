@@ -4,6 +4,10 @@ const dotenv = require('dotenv');
 
 const { series, concurrent, rimraf, mkdirp } = require('nps-utils');
 
+if (!rimraf || !concurrent || !series || !mkdirp) {
+  throw new Error('bad nps-utils functions!');
+}
+
 // cleaner func
 const cleanDist = rimraf('./dist');
 const cleanGenerated = rimraf('./src/server/generated');
@@ -43,14 +47,14 @@ switch (process.env.NODE_ENV) {
         description: 'clean, build and start the server in production',
         script: series.nps('prisma.migrate.up', 'build', 'start'),
       },
-      start: 'node dist/',
+      start: 'pm2 start ./dist/index.js -i 2 --name NexusPrismaGraphqlApi',
     };
     break;
   case 'development':
     scriptsToExport = {
       default: {
         description: 'start the development server',
-        script: 'nodemon -e ts,tsx -i ./src/tests -x ts-node src/',
+        script: 'nodemon -e ts,tsx -i ./src/tests -i index.d.ts -x ts-node src/',
       },
     };
     break;

@@ -6,6 +6,8 @@ COPY ./ /usr/src/app/
 
 WORKDIR /usr/src/app/
 
-RUN npm install
+RUN npm i -g pm2
+
+RUN npm i
 RUN npm run prod build
 CMD [ "npm", "run", "prod", "start" ]

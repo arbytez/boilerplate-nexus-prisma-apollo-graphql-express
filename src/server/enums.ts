@@ -1,7 +1,4 @@
-import { v4 } from 'uuid';
 import { enumType } from '@nexus/schema';
-
-const subsServerId = v4();
 
 export enum ErrorCode {
   EMAIL_ALREADY_IN_USE = 'EMAIL_ALREADY_IN_USE',
@@ -16,8 +13,8 @@ export enum ErrorCode {
 }
 
 export const SubscriptionTrigger = Object.freeze({
-  TODO_EVENT: `TODO_EVENT_${subsServerId}`,
-  USER_EVENT: `USER_EVENT_${subsServerId}`,
+  TODO_EVENT: `TODO_EVENT`,
+  USER_EVENT: `USER_EVENT`,
 });
 
 export enum MutationType {

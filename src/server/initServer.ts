@@ -29,7 +29,6 @@ const app = express();
 signale.await('initializing express middlewares');
 app.use(compress());
 app.use(helmet());
-app.use(helmet({ hidePoweredBy: true }));
 // rate limit middleware only in production
 if (process.env.NODE_ENV === 'production') {
   const limiter = rateLimit({
