@@ -120,8 +120,8 @@ const commonScriptsToExport = {
       down: 'prisma migrate down --experimental',
       default: series.nps('prisma.migrate.save'),
     },
-    studio: 'prisma studio --experimental',
-    introspect: 'prisma2 introspect',
+    studio: 'prisma studio',
+    introspect: 'prisma introspect',
   },
   fixMissingDeclarations: series(
     'dts-gen -m xss-clean -f ./node_modules/xss-clean/lib/index.d.ts -o',
